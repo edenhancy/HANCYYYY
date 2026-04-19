@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social UID Card</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="snowfield" id="snowfield" aria-hidden="true"></div>
+  <div class="cursor-star hidden" id="cursorStar" aria-hidden="true">&#9733;</div>
+  <div class="page-shell">
+    <section class="top-heading">
+      <p class="top-kicker">HANCYYYYYYY&#x1FAE0;</p>
+      <h1>HANCYYYYYYY&#x1FAE0;</h1>
+      <p class="top-copy">gracyous kids</p>
+    </section>
+
+    <main class="dashboard">
+      <section class="panel form-panel">
+        <div class="panel-heading">
+          <h2>Edit Details</h2>
+          <span class="pill">Auto Saved</span>
+        </div>
+
+        <div class="field-grid">
+          <label class="field field-wide">
+            <span>Profile Picture</span>
+            <div class="photo-picker">
+              <label class="upload-btn" for="photoInput">Choose Picture</label>
+              <input id="photoInput" type="file" accept="image/*" hidden>
+              <p class="helper-text">Pick a photo from your device to show on the card.</p>
+            </div>
+          </label>
+          <label class="field">
+            <span>Name</span>
+            <input id="nameInput" type="text" placeholder="Your name or nickname">
+          </label>
+          <label class="field">
+            <span>Tagline</span>
+            <input id="taglineInput" type="text" placeholder="Short bio or status">
+          </label>
+          <label class="field">
+            <span>Instagram</span>
+            <input id="instagramInput" type="text" placeholder="@username">
+          </label>
+          <label class="field">
+            <span>Snap ID</span>
+            <input id="snapInput" type="text" placeholder="Your Snapchat username">
+          </label>
+          <label class="field">
+            <span>Discord</span>
+            <input id="discordInput" type="text" placeholder="username">
+          </label>
+          <label class="field">
+            <span>Discord Server</span>
+            <input id="discordServerInput" type="text" placeholder="Server invite or name">
+          </label>
+          <label class="field">
+            <span>Free Fire UID</span>
+            <input id="freefireUidInput" type="text" placeholder="Your UID">
+          </label>
+        </div>
+      </section>
+
+      <section class="panel preview-panel">
+        <div class="panel-heading">
+          <h2>Preview Card</h2>
+          <div class="panel-actions">
+            <span id="statusPill" class="pill">Ready</span>
+            <button id="copyAllBtn">Copy All</button>
+            <button id="resetBtn" class="ghost-btn">Reset</button>
+          </div>
+        </div>
+
+        <article class="profile-card" id="profileCard">
+          <div class="profile-top">
+            <div>
+              <p class="card-label">Player Contact Card</p>
+              <h3 id="displayName">Your Name</h3>
+              <p id="displayTagline" class="tagline">Add your tagline here.</p>
+            </div>
+            <div class="avatar-badge" id="avatarBadge">
+              <img id="profilePhoto" class="profile-photo hidden" alt="Profile picture">
+              <span id="avatarInitials">YN</span>
+            </div>
+          </div>
+
+          <div class="info-list">
+            <div class="info-row">
+              <div>
+                <span>Instagram</span>
+                <strong id="displayInstagram">@username</strong>
+              </div>
+              <button class="mini-copy-btn" data-copy-target="instagram">Copy</button>
+            </div>
+            <div class="info-row">
+              <div>
+                <span>Snap ID</span>
+                <strong id="displaySnap">username</strong>
+              </div>
+              <button class="mini-copy-btn" data-copy-target="snap">Copy</button>
+            </div>
+            <div class="info-row">
+              <div>
+                <span>Discord</span>
+                <strong id="displayDiscord">username</strong>
+              </div>
+              <button class="mini-copy-btn" data-copy-target="discord">Copy</button>
+            </div>
+            <div class="info-row">
+              <div>
+                <span>Discord Server</span>
+                <strong id="displayDiscordServer">Server invite or name</strong>
+              </div>
+              <button class="mini-copy-btn" data-copy-target="discordServer">Copy</button>
+            </div>
+            <div class="info-row">
+              <div>
+                <span>Free Fire UID</span>
+                <strong id="displayFreefireUid">UID</strong>
+              </div>
+              <button class="mini-copy-btn" data-copy-target="freefireUid">Copy</button>
+            </div>
+          </div>
+        </article>
+      </section>
+      <section class="panel music-panel">
+        <div class="panel-heading">
+          <h2>Music Player &#x1F974;&#x1F974;</h2>
+          <span class="pill" id="trackCountPill">No Tracks</span>
+        </div>
+        <div class="music-toolbar">
+          <label class="upload-btn" for="songInput">Add Songs</label>
+          <input id="songInput" type="file" accept="audio/*" multiple hidden>
+          <div class="now-playing">
+            <span>Now Playing</span>
+            <strong id="nowPlayingLabel">Nothing loaded yet</strong>
+          </div>
+        </div>
+        <audio id="audioPlayer" class="audio-player" controls preload="metadata"></audio>
+        <div class="playlist" id="playlist">
+          <div class="playlist-empty" id="playlistEmpty">
+            Add your own MP3 or audio files and they will appear here.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
