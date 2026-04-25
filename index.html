@@ -499,6 +499,10 @@
      </section> 
    </div> 
   
+   <audio id="bgMusic" preload="auto" loop hidden> 
+     <source src="carousel.mp3" type="audio/mpeg"> 
+   </audio> 
+  
    <script> 
      const PROFILE = { 
        name: "Hancyyyy", 
@@ -542,16 +546,13 @@
      const cursorStar = document.getElementById("cursorStar"); 
      const enterOverlay = document.getElementById("enterOverlay"); 
      const enterBtn = document.getElementById("enterBtn"); 
-     const spotifyPlayer = document.getElementById("spotifyPlayer"); 
+     const bgMusic = document.getElementById("bgMusic"); 
      let lastParticleTime = 0; 
   
      enterBtn.addEventListener("click", () => { 
        enterOverlay.classList.add("hidden"); 
-       // Trigger Spotify autoplay by appending the parameter on interaction 
-       const currentSrc = spotifyPlayer.src; 
-       if (!currentSrc.includes("autoplay=1")) { 
-         spotifyPlayer.src = currentSrc + "&autoplay=1"; 
-       } 
+       // Play the local background music reliably 
+       bgMusic.play().catch(err => console.error("Playback failed:", err)); 
      }); 
   
      const snowflakeCount = window.matchMedia("(max-width: 920px)").matches ? 25 : 40; 
