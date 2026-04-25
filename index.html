@@ -33,7 +33,7 @@
        overflow-x: hidden; 
        background:  
          linear-gradient(rgba(10, 17, 32, 0.6), rgba(10, 17, 32, 0.6)), 
-         url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzJ2dDlzYmVtNjRhcmFiZzh6NGRleHRyOXFiYWlxanNjNGo5bWE4MSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/QSwBid1bso4h5ePFnN/giphy.gif") center/cover no-repeat fixed; 
+         url("https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExN25oNm9jZm13OXBzbXhlNm1wcDF6MjE5dmNvbjd6N2I1c3NjNnE3biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PzmwZmvqZA191oqu3L/giphy.gif") center/cover no-repeat fixed; 
      } 
   
      .snowfield { 
@@ -235,37 +235,44 @@
        display: flex; 
        align-items: center; 
        gap: 14px; 
-       padding: 14px 16px; 
-       border-radius: 20px; 
-       background: rgba(0, 0, 0, 0.3); 
-       border: 1px solid rgba(255, 255, 255, 0.05); 
-       backdrop-filter: blur(4px); 
+       padding: 10px 0; 
+       background: transparent; 
+       border: none; 
+       backdrop-filter: none; 
      } 
   
      .icon-badge { 
-       width: 48px; 
-       height: 48px; 
-       border-radius: 16px; 
+       width: 42px; 
+       height: 42px; 
+       border-radius: 12px; 
        display: grid; 
        place-items: center; 
-       flex: 0 0 48px; 
-       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08); 
+       flex: 0 0 42px; 
+       box-shadow: none; 
+       backdrop-filter: blur(2px);
+       border: 1px solid rgba(255, 255, 255, 0.1);
+       opacity: 0.5;
+       transition: opacity 0.3s ease;
      } 
+
+     .icon-badge:hover {
+       opacity: 1;
+     }
   
      .icon-instagram { 
-       background: linear-gradient(135deg, #ff9a5b, #ff4fa3 52%, #9d5cff); 
+       background: rgba(225, 48, 108, 0.15) !important; 
      } 
   
      .icon-snap { 
-       background: linear-gradient(135deg, #fff179, #ffd400); 
+       background: rgba(255, 252, 0, 0.15) !important; 
      } 
   
      .icon-discord { 
-       background: linear-gradient(135deg, #7d8cff, #5865f2); 
+       background: rgba(88, 101, 242, 0.15) !important; 
      } 
   
      .icon-server { 
-       background: linear-gradient(135deg, #8ef7ff, #4ccfe1); 
+       background: rgba(76, 207, 225, 0.15) !important; 
      } 
   
      .icon-badge svg { 
@@ -310,13 +317,33 @@
      /* Spotify Embed Styles */ 
      .spotify-container { 
        margin-top: 24px; 
-       border-radius: 0; 
+       border-radius: 12px; 
        overflow: hidden; 
        box-shadow: none; 
        background: transparent; 
        border: none; 
        line-height: 0; 
+       position: relative;
      } 
+  
+     #spotifyPlayer { 
+       opacity: 0.8; 
+       transition: opacity 0.4s ease, transform 0.4s ease; 
+       filter: grayscale(0); 
+     } 
+  
+     #spotifyPlayer:hover {
+       opacity: 1;
+     }
+
+     /* Hidden YouTube Player for Autoplay */
+     #ytPlayer {
+       position: absolute;
+       width: 1px;
+       height: 1px;
+       opacity: 0;
+       pointer-events: none;
+     }
   
      /* Enter Overlay Styles */ 
      .enter-overlay { 
@@ -324,7 +351,7 @@
        inset: 0; 
        background:  
          linear-gradient(rgba(10, 17, 32, 0.7), rgba(10, 17, 32, 0.7)), 
-         url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzJ2dDlzYmVtNjRhcmFiZzh6NGRleHRyOXFiYWlxanNjNGo5bWE4MSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/QSwBid1bso4h5ePFnN/giphy.gif") center/cover no-repeat fixed; 
+         url("https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExN25oNm9jZm13OXBzbXhlNm1wcDF6MjE5dmNvbjd6N2I1c3NjNnE3biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PzmwZmvqZA191oqu3L/giphy.gif") center/cover no-repeat fixed; 
        z-index: 9999; 
        display: grid; 
        place-items: center; 
@@ -505,14 +532,12 @@
      </section> 
   
      <!-- Spotify Embed --> 
-     <section class="spotify-container"> 
-       <iframe id="spotifyPlayer" style="border-radius:12px" src="https://open.spotify.com/embed/track/2Gs0iF27my40p0dANv2rAg?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> 
+     <section class="spotify-container" id="spotifyContainer"> 
+       <iframe id="spotifyPlayer" data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/2Gs0iF27my40p0dANv2rAg?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> 
+       <!-- Hidden YouTube Player for reliable background music -->
+       <div id="ytPlayerContainer"></div>
      </section> 
    </div> 
-  
-   <audio id="bgMusic" preload="auto" loop hidden> 
-     <source src="carousel.mp3" type="audio/mpeg"> 
-   </audio> 
   
    <script> 
      const PROFILE = { 
@@ -557,26 +582,27 @@
      const cursorStar = document.getElementById("cursorStar"); 
      const enterOverlay = document.getElementById("enterOverlay"); 
      const enterBtn = document.getElementById("enterBtn"); 
-     const bgMusic = document.getElementById("bgMusic"); 
-     const spotifyPlayer = document.getElementById("spotifyPlayer"); 
+     const spotifyContainer = document.getElementById("spotifyContainer"); 
+     const ytPlayerContainer = document.getElementById("ytPlayerContainer");
      let lastParticleTime = 0; 
   
      enterBtn.addEventListener("click", () => { 
        enterOverlay.classList.add("hidden"); 
   
-       // 1. Try playing local audio (if file exists) 
-       bgMusic.play().catch(() => { 
-         console.warn("Local audio 'carousel.mp3' not found or blocked. Trying Spotify..."); 
-       }); 
-  
-       // 2. Re-render Spotify iframe with autoplay parameter 
-       // Re-creating the element during a user click is the best way to trigger autoplay 
-       const currentSrc = spotifyPlayer.src; 
-       const newSrc = currentSrc.includes("?")  
-         ? `${currentSrc}&autoplay=1`  
-         : `${currentSrc}?autoplay=1`; 
-        
-       spotifyPlayer.src = newSrc; 
+       // 1. Start Background Music via YouTube (Most reliable for autoplay)
+       // Song: MONTAGEM XONADA
+       const videoId = "L8u_z4AaXRs"; 
+       const ytIframe = document.createElement("iframe");
+       ytIframe.id = "ytPlayer";
+       ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&controls=0&mute=0&enablejsapi=1`;
+       ytIframe.allow = "autoplay";
+       ytPlayerContainer.appendChild(ytIframe);
+
+       // 2. Make Spotify visual active
+        const spotifyPlayer = document.getElementById("spotifyPlayer");
+        if (spotifyPlayer) {
+          spotifyPlayer.style.opacity = "1";
+        }
      }); 
   
      const snowflakeCount = window.matchMedia("(max-width: 920px)").matches ? 25 : 40; 
