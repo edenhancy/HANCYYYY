@@ -298,81 +298,54 @@
        text-decoration-color: rgba(255, 255, 255, 0.5); 
      } 
   
-     /* Music Player Styles */ 
-     .music-player { 
+     /* Spotify Embed Styles */ 
+     .spotify-container { 
        margin-top: 24px; 
-       padding: 20px; 
        border-radius: 24px; 
-       border: 1px solid var(--line); 
-       background: var(--panel); 
-       backdrop-filter: blur(24px); 
-       display: flex; 
-       align-items: center; 
-       gap: 16px; 
+       overflow: hidden; 
        box-shadow: var(--shadow); 
+       background: rgba(0, 0, 0, 0.6); 
+       border: 1px solid var(--line); 
+       line-height: 0; 
      } 
   
-     .player-btn { 
-       width: 44px; 
-       height: 44px; 
-       border-radius: 50%; 
-       border: none; 
-       background: var(--gold); 
-       color: var(--bg); 
+     /* Enter Overlay Styles */ 
+     .enter-overlay { 
+       position: fixed; 
+       inset: 0; 
+       background: #070d18; 
+       z-index: 9999; 
        display: grid; 
        place-items: center; 
-       cursor: pointer; 
-       transition: transform 0.2s ease, box-shadow 0.2s ease; 
+       transition: opacity 0.8s ease, visibility 0.8s ease; 
      } 
   
-     .player-btn:hover { 
+     .enter-overlay.hidden { 
+       opacity: 0; 
+       visibility: hidden; 
+     } 
+  
+     .enter-btn { 
+       background: none; 
+       border: 1px solid rgba(255, 255, 255, 0.2); 
+       color: #fff; 
+       padding: 16px 40px; 
+       border-radius: 999px; 
+       font-size: 1.1rem; 
+       letter-spacing: 0.2em; 
+       text-transform: uppercase; 
+       cursor: pointer; 
+       backdrop-filter: blur(10px); 
+       transition: all 0.3s ease; 
+       box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); 
+     } 
+  
+     .enter-btn:hover { 
+       background: rgba(255, 255, 255, 0.05); 
+       border-color: var(--gold); 
+       color: var(--gold); 
+       box-shadow: 0 0 40px rgba(255, 216, 122, 0.15); 
        transform: scale(1.05); 
-       box-shadow: 0 0 15px rgba(255, 216, 122, 0.4); 
-     } 
-  
-     .player-btn svg { 
-       width: 20px; 
-       height: 20px; 
-       fill: currentColor; 
-     } 
-  
-     .player-info { 
-       flex: 1; 
-       min-width: 0; 
-     } 
-  
-     .song-title { 
-       display: block; 
-       font-size: 0.95rem; 
-       font-weight: 600; 
-       margin-bottom: 6px; 
-       white-space: nowrap; 
-       overflow: hidden; 
-       text-overflow: ellipsis; 
-     } 
-  
-     .progress-container { 
-       height: 4px; 
-       background: rgba(255, 255, 255, 0.1); 
-       border-radius: 2px; 
-       cursor: pointer; 
-       position: relative; 
-     } 
-  
-     .progress-bar { 
-       height: 100%; 
-       background: var(--gold); 
-       border-radius: 2px; 
-       width: 0%; 
-       transition: width 0.1s linear; 
-     } 
-  
-     .time-display { 
-       font-size: 0.75rem; 
-       color: var(--muted); 
-       margin-top: 6px; 
-       display: flex; 
-       justify-content: space-between; 
      } 
   
      @media (max-width: 860px) { 
@@ -432,6 +405,10 @@
    </style> 
  </head> 
  <body> 
+   <div class="enter-overlay" id="enterOverlay"> 
+     <button class="enter-btn" id="enterBtn">Enter</button> 
+   </div> 
+  
    <div class="snowfield" id="snowfield" aria-hidden="true"></div> 
    <div class="cursor-star hidden" id="cursorStar" aria-hidden="true">&#9733;</div> 
   
@@ -516,28 +493,11 @@
        </article> 
      </section> 
   
-     <!-- Music Player --> 
-     <section class="music-player"> 
-       <button class="player-btn" id="playPauseBtn" aria-label="Play/Pause"> 
-         <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> 
-         <svg id="pauseIcon" viewBox="0 0 24 24" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> 
-       </button> 
-       <div class="player-info"> 
-         <span class="song-title">Carousel.mp3</span> 
-         <div class="progress-container" id="progressContainer"> 
-           <div class="progress-bar" id="progressBar"></div> 
-         </div> 
-         <div class="time-display"> 
-           <span id="currentTime">0:00</span> 
-           <span id="duration">0:00</span> 
-         </div> 
-       </div> 
+     <!-- Spotify Embed --> 
+     <section class="spotify-container"> 
+       <iframe id="spotifyPlayer" style="border-radius:12px" src="https://open.spotify.com/embed/track/2Gs0iF27my40p0dANv2rAg?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> 
      </section> 
    </div> 
-  
-   <audio id="entrySong" preload="auto" autoplay loop hidden> 
-     <source src="carousel.mp3" type="audio/mpeg"> 
-   </audio> 
   
    <script> 
      const PROFILE = { 
@@ -580,68 +540,18 @@
   
      const snowfield = document.getElementById("snowfield"); 
      const cursorStar = document.getElementById("cursorStar"); 
-     const entrySong = document.getElementById("entrySong"); 
-     const playPauseBtn = document.getElementById("playPauseBtn"); 
-     const playIcon = document.getElementById("playIcon"); 
-     const pauseIcon = document.getElementById("pauseIcon"); 
-     const progressBar = document.getElementById("progressBar"); 
-     const progressContainer = document.getElementById("progressContainer"); 
-     const currentTimeEl = document.getElementById("currentTime"); 
-     const durationEl = document.getElementById("duration"); 
+     const enterOverlay = document.getElementById("enterOverlay"); 
+     const enterBtn = document.getElementById("enterBtn"); 
+     const spotifyPlayer = document.getElementById("spotifyPlayer"); 
      let lastParticleTime = 0; 
   
-     function togglePlay() { 
-       if (entrySong.paused) { 
-         entrySong.play(); 
-         playIcon.style.display = "none"; 
-         pauseIcon.style.display = "block"; 
-       } else { 
-         entrySong.pause(); 
-         playIcon.style.display = "block"; 
-         pauseIcon.style.display = "none"; 
+     enterBtn.addEventListener("click", () => { 
+       enterOverlay.classList.add("hidden"); 
+       // Trigger Spotify autoplay by appending the parameter on interaction 
+       const currentSrc = spotifyPlayer.src; 
+       if (!currentSrc.includes("autoplay=1")) { 
+         spotifyPlayer.src = currentSrc + "&autoplay=1"; 
        } 
-     } 
-  
-     playPauseBtn.addEventListener("click", togglePlay); 
-  
-     entrySong.addEventListener("timeupdate", () => { 
-       const progress = (entrySong.currentTime / entrySong.duration) * 100; 
-       progressBar.style.width = `${progress}%`; 
-       currentTimeEl.textContent = formatTime(entrySong.currentTime); 
-     }); 
-  
-     entrySong.addEventListener("loadedmetadata", () => { 
-       durationEl.textContent = formatTime(entrySong.duration); 
-     }); 
-  
-     progressContainer.addEventListener("click", (e) => { 
-       const width = progressContainer.clientWidth; 
-       const clickX = e.offsetX; 
-       const duration = entrySong.duration; 
-       entrySong.currentTime = (clickX / width) * duration; 
-     }); 
-  
-     function formatTime(seconds) { 
-       const mins = Math.floor(seconds / 60); 
-       const secs = Math.floor(seconds % 60); 
-       return `${mins}:${secs.toString().padStart(2, "0")}`; 
-     } 
-  
-     entrySong.play().then(() => { 
-       playIcon.style.display = "none"; 
-       pauseIcon.style.display = "block"; 
-     }).catch(() => { 
-       const startSong = () => { 
-         entrySong.play().then(() => { 
-           playIcon.style.display = "none"; 
-           pauseIcon.style.display = "block"; 
-         }).catch(() => {}); 
-         document.removeEventListener("click", startSong); 
-         document.removeEventListener("touchstart", startSong); 
-       }; 
-  
-       document.addEventListener("click", startSong, { once: true }); 
-       document.addEventListener("touchstart", startSong, { once: true }); 
      }); 
   
      const snowflakeCount = window.matchMedia("(max-width: 920px)").matches ? 25 : 40; 
