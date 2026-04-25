@@ -1,563 +1,544 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HANCYYYYYYY</title>
-  <style>
-    :root {
-      --bg: #0a1120;
-      --panel: rgba(10, 18, 34, 0.82);
-      --panel-strong: rgba(12, 22, 40, 0.94);
-      --line: rgba(149, 192, 255, 0.14);
-      --text: #f3f7ff;
-      --muted: #a3b4d1;
-      --gold: #ffd87a;
-      --cyan: #78d7ff;
-      --pink: #ff85c8;
-      --violet: #9e8bff;
-      --yellow: #ffe168;
-      --orange: #ffb15f;
-      --shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text);
-      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-      overflow-x: hidden;
-      background:
-        radial-gradient(circle at top left, rgba(120, 215, 255, 0.14), transparent 26%),
-        radial-gradient(circle at top right, rgba(255, 133, 200, 0.1), transparent 24%),
-        linear-gradient(155deg, #07101c 0%, #0c1628 50%, #07111f 100%);
-    }
-
-    .snowfield {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
-
-    .snowflake {
-      position: absolute;
-      top: -10vh;
-      color: rgba(255, 255, 255, 0.82);
-      text-shadow: 0 0 14px rgba(120, 215, 255, 0.34);
-      animation: snow-fall linear infinite;
-    }
-
-    .cursor-star {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 28px;
-      height: 28px;
-      margin-left: -14px;
-      margin-top: -14px;
-      display: grid;
-      place-items: center;
-      font-size: 1.1rem;
-      color: #fff3b0;
-      text-shadow:
-        0 0 8px rgba(255, 243, 176, 0.9),
-        0 0 18px rgba(120, 215, 255, 0.42);
-      pointer-events: none;
-      z-index: 5;
-      transition: transform 100ms ease;
-    }
-
-    .cursor-star.hidden {
-      opacity: 0;
-    }
-
-    .star-particle {
-      position: fixed;
-      left: 0;
-      top: 0;
-      pointer-events: none;
-      z-index: 4;
-      color: rgba(255, 243, 176, 0.92);
-      font-size: 0.82rem;
-      animation: star-burst 700ms ease-out forwards;
-    }
-
-    .page-shell {
-      position: relative;
-      z-index: 2;
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 28px 18px 48px;
-    }
-
-    .top-heading,
-    .profile-shell {
-      border: 1px solid var(--line);
-      border-radius: 30px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
-    }
-
-    .top-heading {
-      margin-bottom: 24px;
-      padding: 24px 26px;
-      background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(120, 215, 255, 0.05)),
-        var(--panel);
-    }
-
-    .top-kicker {
-      margin: 0 0 10px;
-      color: var(--gold);
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      font-size: 0.78rem;
-    }
-
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
-
-    .top-heading h1 {
-      margin-bottom: 0;
-      font-size: clamp(2.1rem, 5vw, 4rem);
-      line-height: 0.92;
-      letter-spacing: -0.05em;
-      text-shadow: 0 0 22px rgba(255, 216, 122, 0.08);
-    }
-
-    .top-copy {
-      margin: 12px 0 0;
-      max-width: 34ch;
-      color: var(--muted);
-      font-size: 1rem;
-    }
-
-    .profile-shell {
-      display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 22px;
-      padding: 22px;
-      background:
-        radial-gradient(circle at 15% 15%, rgba(255, 216, 122, 0.08), transparent 18%),
-        linear-gradient(135deg, rgba(11, 21, 38, 0.96), rgba(8, 16, 30, 0.94));
-    }
-
-    .identity-card,
-    .details-card {
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      background: var(--panel-strong);
-      padding: 22px;
-    }
-
-    .avatar-frame {
-      width: 116px;
-      height: 116px;
-      border-radius: 32px;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      background: linear-gradient(135deg, #ffd87a, #78d7ff);
-      color: #0a1120;
-      font-size: 2rem;
-      font-weight: 700;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
-    }
-
-    .avatar-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none;
-    }
-
-    .small-label {
-      margin: 16px 0 8px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-size: 0.78rem;
-    }
-
-    .identity-card h2 {
-      margin-bottom: 8px;
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      line-height: 0.95;
-    }
-
-    .identity-card p {
-      color: var(--muted);
-      margin-bottom: 0;
-    }
-
-    .tag-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 18px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      color: var(--gold);
-      font-size: 0.92rem;
-    }
-
-    .details-card h3 {
-      margin-bottom: 14px;
-      font-size: 1.1rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .detail-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .detail-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.035);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .icon-badge {
-      width: 48px;
-      height: 48px;
-      border-radius: 16px;
-      display: grid;
-      place-items: center;
-      flex: 0 0 48px;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-    }
-
-    .icon-instagram {
-      background: linear-gradient(135deg, #ff9a5b, #ff4fa3 52%, #9d5cff);
-    }
-
-    .icon-snap {
-      background: linear-gradient(135deg, #fff179, #ffd400);
-    }
-
-    .icon-discord {
-      background: linear-gradient(135deg, #7d8cff, #5865f2);
-    }
-
-    .icon-server {
-      background: linear-gradient(135deg, #8ef7ff, #4ccfe1);
-    }
-
-    .icon-uid {
-      background: linear-gradient(135deg, #ffb16b, #ff7b6b);
-    }
-
-    .icon-badge svg {
-      width: 22px;
-      height: 22px;
-      fill: none;
-      stroke: #fff;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .detail-meta {
-      min-width: 0;
-    }
-
-    .detail-meta span {
-      display: block;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      font-size: 0.75rem;
-    }
-
-    .detail-meta strong {
-      display: block;
-      margin-top: 6px;
-      font-size: 1rem;
-      word-break: break-word;
-    }
-
-    .detail-link {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .detail-link:hover {
-      text-decoration: underline;
-      text-decoration-color: rgba(255, 255, 255, 0.5);
-    }
-
-    @media (max-width: 860px) {
-      .profile-shell {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (pointer: fine) {
-      body {
-        cursor: none;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .snowflake,
-      .star-particle {
-        animation: none;
-      }
-
-      .cursor-star {
-        display: none;
-      }
-
-      body {
-        cursor: auto;
-      }
-    }
-
-    @keyframes snow-fall {
-      from {
-        transform: translate3d(0, 0, 0) rotate(0deg);
-        opacity: 0;
-      }
-
-      10% {
-        opacity: 0.85;
-      }
-
-      to {
-        transform: translate3d(30px, 115vh, 0) rotate(220deg);
-        opacity: 0.16;
-      }
-    }
-
-    @keyframes star-burst {
-      from {
-        transform: translate3d(0, 0, 0) scale(1);
-        opacity: 0.95;
-      }
-
-      to {
-        transform: translate3d(var(--drift-x), var(--drift-y), 0) scale(0.2);
-        opacity: 0;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="snowfield" id="snowfield" aria-hidden="true"></div>
-  <div class="cursor-star hidden" id="cursorStar" aria-hidden="true">&#9733;</div>
-
-  <div class="page-shell">
-    <section class="top-heading">
-      <p class="top-kicker">HANCYYYYYYY&#x1FAE0;</p>
-      <h1>HANCYYYYYYY&#x1FAE0;</h1>
-      <p class="top-copy">gracyous kids</p>
-    </section>
-
-    <section class="profile-shell">
-      <article class="identity-card">
-        <div class="avatar-frame">
-          <span id="avatarText">HY</span>
-          <img id="avatarImage" alt="Profile picture">
-        </div>
-        <p class="small-label">Display Card</p>
-        <h2 id="profileName">HANCYYYYYYY</h2>
-        <p id="profileTagline">gracyous kids</p>
-      </article>
-
-      <article class="details-card">
-        <h3>Connect</h3>
-        <div class="detail-list">
-          <div class="detail-row">
-            <div class="icon-badge icon-instagram" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect>
-                <circle cx="12" cy="12" r="4.2"></circle>
-                <circle cx="17.4" cy="6.6" r="0.8" fill="#fff" stroke="none"></circle>
-              </svg>
-            </div>
-            <div class="detail-meta">
-              <span>Instagram</span>
-              <strong id="instagramValue">@username</strong>
-            </div>
-          </div>
-
-          <div class="detail-row">
-            <div class="icon-badge icon-snap" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="M9.3 19.3c.7-.5 1.4-.8 2.7-.8s2 .3 2.7.8c.5-.9 1.3-1.5 2.5-1.8-.9-.7-1.4-1.6-1.6-2.7.9-.2 1.6-.7 2-1.5-.7-.2-1.3-.5-1.8-.9.4-1 .5-2 .2-3.2-.7-2.8-3.2-4.6-6-4.6s-5.3 1.8-6 4.6c-.3 1.2-.2 2.2.2 3.2-.5.4-1.1.7-1.8.9.4.8 1.1 1.3 2 1.5-.2 1.1-.7 2-1.6 2.7 1.2.3 2 .9 2.5 1.8z"></path>
-              </svg>
-            </div>
-            <div class="detail-meta">
-              <span>Snap ID</span>
-              <strong id="snapValue">username</strong>
-            </div>
-          </div>
-
-          <div class="detail-row">
-            <div class="icon-badge icon-discord" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="M8 8.8c2.4-1.7 5.6-1.7 8 0"></path>
-                <path d="M7 16c3 1.7 7 1.7 10 0"></path>
-                <path d="M8.8 11.2h.1"></path>
-                <path d="M15.1 11.2h.1"></path>
-                <path d="M6.5 17.4c-.9-2-1.2-4.1-.8-6.2.5-2.4 1.8-4.4 3.8-5.8 1.7.2 2.6.6 2.6.6s.9-.4 2.6-.6c2 1.4 3.3 3.4 3.8 5.8.4 2.1.1 4.2-.8 6.2"></path>
-              </svg>
-            </div>
-            <div class="detail-meta">
-              <span>Discord</span>
-              <strong id="discordValue">username</strong>
-            </div>
-          </div>
-
-          <div class="detail-row">
-            <div class="icon-badge icon-server" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <rect x="4" y="4.5" width="16" height="5" rx="1.8"></rect>
-                <rect x="4" y="14.5" width="16" height="5" rx="1.8"></rect>
-                <path d="M8 7h.01"></path>
-                <path d="M8 17h.01"></path>
-              </svg>
-            </div>
-            <div class="detail-meta">
-              <span>Discord Server</span>
-              <strong id="serverValue">Server invite or name</strong>
-            </div>
-          </div>
-
-          <div class="detail-row">
-            <div class="icon-badge icon-uid" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="M6 12h12"></path>
-                <path d="M8 9v6"></path>
-                <path d="M16 10h.01"></path>
-                <path d="M18 14h.01"></path>
-                <path d="M7.5 18h9a4.5 4.5 0 0 0 4.5-4.5v-3A4.5 4.5 0 0 0 16.5 6h-9A4.5 4.5 0 0 0 3 10.5v3A4.5 4.5 0 0 0 7.5 18z"></path>
-              </svg>
-            </div>
-            <div class="detail-meta">
-              <span>Free Fire UID</span>
-              <strong id="uidValue">UID</strong>
-            </div>
-          </div>
-        </div>
-      </article>
-    </section>
-  </div>
-
-  <audio id="entrySong" preload="auto" autoplay loop hidden>
-    <source src="carousel.mp3" type="audio/mpeg">
-  </audio>
-
-  <script>
-    const PROFILE = {
-      name: "Hancyyyy",
-      tagline: "Gamer | Creator | Friend",
-      instagram: "__hanncyy__",
-      snap: "@h3xer.2007",
-      discord: "akhilff7024",
-      discordServer: "https://discord.gg/FfsG3auz",
-      freefireUid: "UID",
-      avatarInitials: "H",
-      photo: ""
-    };
-
-    document.getElementById("profileName").textContent = PROFILE.name;
-    document.getElementById("profileTagline").textContent = PROFILE.tagline;
-    document.getElementById("instagramValue").textContent = PROFILE.instagram;
-    document.getElementById("snapValue").textContent = PROFILE.snap;
-    document.getElementById("discordValue").textContent = PROFILE.discord;
-    document.getElementById("uidValue").textContent = PROFILE.freefireUid;
-    document.getElementById("avatarText").textContent = PROFILE.avatarInitials;
-
-    const serverValue = document.getElementById("serverValue");
-    if (PROFILE.discordServer.startsWith("http://") || PROFILE.discordServer.startsWith("https://")) {
-      serverValue.innerHTML = `<a class="detail-link" href="${PROFILE.discordServer}" target="_blank" rel="noreferrer">${PROFILE.discordServer}</a>`;
-    } else {
-      serverValue.textContent = PROFILE.discordServer;
-    }
-
-    if (PROFILE.photo) {
-      const img = document.getElementById("avatarImage");
-      img.src = PROFILE.photo;
-      img.style.display = "block";
-      document.getElementById("avatarText").style.display = "none";
-    }
-
-    const snowfield = document.getElementById("snowfield");
-    const cursorStar = document.getElementById("cursorStar");
-    const entrySong = document.getElementById("entrySong");
-    let lastParticleTime = 0;
-
-    entrySong.play().catch(() => {
-      const startSong = () => {
-        entrySong.play().catch(() => {});
-        document.removeEventListener("click", startSong);
-        document.removeEventListener("touchstart", startSong);
-      };
-
-      document.addEventListener("click", startSong, { once: true });
-      document.addEventListener("touchstart", startSong, { once: true });
-    });
-
-    const snowflakeCount = window.matchMedia("(max-width: 920px)").matches ? 18 : 28;
-    for (let index = 0; index < snowflakeCount; index += 1) {
-      const flake = document.createElement("span");
-      flake.className = "snowflake";
-      flake.innerHTML = "&#10052;";
-      flake.style.left = `${Math.random() * 100}%`;
-      flake.style.fontSize = `${10 + Math.random() * 18}px`;
-      flake.style.opacity = `${0.38 + Math.random() * 0.42}`;
-      flake.style.animationDuration = `${7 + Math.random() * 9}s`;
-      flake.style.animationDelay = `${Math.random() * -12}s`;
-      snowfield.appendChild(flake);
-    }
-
-    if (window.matchMedia("(pointer: fine)").matches) {
-      document.addEventListener("pointermove", (event) => {
-        cursorStar.classList.remove("hidden");
-        cursorStar.style.transform = `translate(${event.clientX}px, ${event.clientY}px) scale(1)`;
-        const now = performance.now();
-        if (now - lastParticleTime > 40) {
-          spawnStarParticle(event.clientX, event.clientY);
-          lastParticleTime = now;
-        }
-      });
-
-      document.addEventListener("pointerleave", () => {
-        cursorStar.classList.add("hidden");
-      });
-    }
-
-    function spawnStarParticle(x, y) {
-      const particle = document.createElement("span");
-      particle.className = "star-particle";
-      particle.innerHTML = Math.random() > 0.5 ? "&#10022;" : "&#10023;";
-      particle.style.left = `${x}px`;
-      particle.style.top = `${y}px`;
-      particle.style.setProperty("--drift-x", `${-10 + Math.random() * 20}px`);
-      particle.style.setProperty("--drift-y", `${-10 + Math.random() * 20}px`);
-      document.body.appendChild(particle);
-      window.setTimeout(() => particle.remove(), 700);
-    }
-  </script>
-</body>
-</html>
+<!DOCTYPE html> 
+ <html lang="en"> 
+ <head> 
+   <meta charset="UTF-8"> 
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+   <title>HANCYYYYYYY</title> 
+   <style> 
+     :root { 
+       --bg: #0a1120; 
+       --panel: rgba(0, 0, 0, 0.45); 
+       --panel-strong: rgba(0, 0, 0, 0.6); 
+       --line: rgba(149, 192, 255, 0.18); 
+       --text: #f3f7ff; 
+       --muted: #a3b4d1; 
+       --gold: #ffd87a; 
+       --cyan: #78d7ff; 
+       --pink: #ff85c8; 
+       --violet: #9e8bff; 
+       --yellow: #ffe168; 
+       --orange: #ffb15f; 
+       --shadow: 0 28px 80px rgba(0, 0, 0, 0.5); 
+     } 
+  
+     * { 
+       box-sizing: border-box; 
+     } 
+  
+     body { 
+       margin: 0; 
+       min-height: 100vh; 
+       color: var(--text); 
+       font-family: "Trebuchet MS", "Segoe UI", sans-serif; 
+       overflow-x: hidden; 
+       background: 
+         radial-gradient(circle at top left, rgba(120, 215, 255, 0.14), transparent 26%), 
+         radial-gradient(circle at top right, rgba(255, 133, 200, 0.1), transparent 24%), 
+         linear-gradient(155deg, #07101c 0%, #0c1628 50%, #07111f 100%); 
+     } 
+  
+     .snowfield { 
+       position: fixed; 
+       inset: 0; 
+       pointer-events: none; 
+       overflow: hidden; 
+       z-index: 0; 
+     } 
+  
+     .snowflake { 
+       position: absolute; 
+       top: -10vh; 
+       color: rgba(255, 255, 255, 0.82); 
+       text-shadow: 0 0 14px rgba(120, 215, 255, 0.34); 
+       animation: snow-fall linear infinite; 
+     } 
+  
+     .cursor-star { 
+       position: fixed; 
+       left: 0; 
+       top: 0; 
+       width: 28px; 
+       height: 28px; 
+       margin-left: -14px; 
+       margin-top: -14px; 
+       display: grid; 
+       place-items: center; 
+       font-size: 1.1rem; 
+       color: #fff3b0; 
+       text-shadow: 
+         0 0 8px rgba(255, 243, 176, 0.9), 
+         0 0 18px rgba(120, 215, 255, 0.42); 
+       pointer-events: none; 
+       z-index: 5; 
+       transition: transform 100ms ease; 
+     } 
+  
+     .cursor-star.hidden { 
+       opacity: 0; 
+     } 
+  
+     .star-particle { 
+       position: fixed; 
+       left: 0; 
+       top: 0; 
+       pointer-events: none; 
+       z-index: 4; 
+       color: rgba(255, 243, 176, 0.92); 
+       font-size: 0.82rem; 
+       animation: star-burst 700ms ease-out forwards; 
+     } 
+  
+     .page-shell { 
+       position: relative; 
+       z-index: 2; 
+       max-width: 1120px; 
+       margin: 0 auto; 
+       padding: 28px 18px 48px; 
+     } 
+  
+     .top-heading, 
+     .profile-shell { 
+       border: 1px solid var(--line); 
+       border-radius: 30px; 
+       box-shadow: var(--shadow); 
+       backdrop-filter: blur(24px); 
+     } 
+  
+     .top-heading { 
+       margin-bottom: 24px; 
+       padding: 24px 26px; 
+       background: var(--panel); 
+     } 
+  
+     .top-kicker { 
+       margin: 0 0 10px; 
+       color: var(--gold); 
+       text-transform: uppercase; 
+       letter-spacing: 0.16em; 
+       font-size: 0.78rem; 
+     } 
+  
+     h1, 
+     h2, 
+     h3, 
+     p { 
+       margin-top: 0; 
+     } 
+  
+     .top-heading h1 { 
+       margin-bottom: 0; 
+       font-size: clamp(2.1rem, 5vw, 4rem); 
+       line-height: 0.92; 
+       letter-spacing: -0.05em; 
+       text-shadow: 0 0 22px rgba(255, 216, 122, 0.08); 
+     } 
+  
+     .top-copy { 
+       margin: 12px 0 0; 
+       max-width: 34ch; 
+       color: var(--muted); 
+       font-size: 1rem; 
+     } 
+  
+     .profile-shell { 
+       display: grid; 
+       grid-template-columns: 340px 1fr; 
+       gap: 22px; 
+       padding: 22px; 
+       background: var(--panel); 
+     } 
+  
+     .identity-card, 
+     .details-card { 
+       border-radius: 24px; 
+       border: 1px solid rgba(149, 192, 255, 0.12); 
+       background: var(--panel-strong); 
+       backdrop-filter: blur(12px); 
+       padding: 22px; 
+     } 
+  
+     .avatar-frame { 
+       width: 116px; 
+       height: 116px; 
+       border-radius: 32px; 
+       display: grid; 
+       place-items: center; 
+       overflow: hidden; 
+       background: linear-gradient(135deg, #ffd87a, #78d7ff); 
+       color: #0a1120; 
+       font-size: 2rem; 
+       font-weight: 700; 
+       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22); 
+     } 
+  
+     .avatar-frame img { 
+       width: 100%; 
+       height: 100%; 
+       object-fit: cover; 
+       display: none; 
+     } 
+  
+     .small-label { 
+       margin: 16px 0 8px; 
+       color: var(--muted); 
+       text-transform: uppercase; 
+       letter-spacing: 0.12em; 
+       font-size: 0.78rem; 
+     } 
+  
+     .identity-card h2 { 
+       margin-bottom: 8px; 
+       font-size: clamp(1.8rem, 4vw, 2.6rem); 
+       line-height: 0.95; 
+     } 
+  
+     .identity-card p { 
+       color: var(--muted); 
+       margin-bottom: 0; 
+     } 
+  
+     .tag-chip { 
+       display: inline-flex; 
+       align-items: center; 
+       gap: 8px; 
+       margin-top: 18px; 
+       padding: 10px 14px; 
+       border-radius: 999px; 
+       background: rgba(255, 255, 255, 0.05); 
+       border: 1px solid rgba(255, 255, 255, 0.06); 
+       color: var(--gold); 
+       font-size: 0.92rem; 
+     } 
+  
+     .details-card h3 { 
+       margin-bottom: 14px; 
+       font-size: 1.1rem; 
+       letter-spacing: 0.04em; 
+       text-transform: uppercase; 
+       color: var(--muted); 
+     } 
+  
+     .detail-list { 
+       display: grid; 
+       gap: 12px; 
+     } 
+  
+     .detail-row { 
+       display: flex; 
+       align-items: center; 
+       gap: 14px; 
+       padding: 14px 16px; 
+       border-radius: 20px; 
+       background: rgba(255, 255, 255, 0.035); 
+       border: 1px solid rgba(255, 255, 255, 0.05); 
+     } 
+  
+     .icon-badge { 
+       width: 48px; 
+       height: 48px; 
+       border-radius: 16px; 
+       display: grid; 
+       place-items: center; 
+       flex: 0 0 48px; 
+       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08); 
+     } 
+  
+     .icon-instagram { 
+       background: linear-gradient(135deg, #ff9a5b, #ff4fa3 52%, #9d5cff); 
+     } 
+  
+     .icon-snap { 
+       background: linear-gradient(135deg, #fff179, #ffd400); 
+     } 
+  
+     .icon-discord { 
+       background: linear-gradient(135deg, #7d8cff, #5865f2); 
+     } 
+  
+     .icon-server { 
+       background: linear-gradient(135deg, #8ef7ff, #4ccfe1); 
+     } 
+  
+     .icon-badge svg { 
+       width: 22px; 
+       height: 22px; 
+       fill: none; 
+       stroke: #fff; 
+       stroke-width: 2; 
+       stroke-linecap: round; 
+       stroke-linejoin: round; 
+     } 
+  
+     .detail-meta { 
+       min-width: 0; 
+     } 
+  
+     .detail-meta span { 
+       display: block; 
+       color: var(--muted); 
+       text-transform: uppercase; 
+       letter-spacing: 0.1em; 
+       font-size: 0.75rem; 
+     } 
+  
+     .detail-meta strong { 
+       display: block; 
+       margin-top: 6px; 
+       font-size: 1rem; 
+       word-break: break-word; 
+     } 
+  
+     .detail-link { 
+       color: inherit; 
+       text-decoration: none; 
+     } 
+  
+     .detail-link:hover { 
+       text-decoration: underline; 
+       text-decoration-color: rgba(255, 255, 255, 0.5); 
+     } 
+  
+     @media (max-width: 860px) { 
+       .profile-shell { 
+         grid-template-columns: 1fr; 
+       } 
+     } 
+  
+     @media (pointer: fine) { 
+       body { 
+         cursor: none; 
+       } 
+     } 
+  
+     @media (prefers-reduced-motion: reduce) { 
+       .snowflake, 
+       .star-particle { 
+         animation: none; 
+       } 
+  
+       .cursor-star { 
+         display: none; 
+       } 
+  
+       body { 
+         cursor: auto; 
+       } 
+     } 
+  
+     @keyframes snow-fall { 
+       from { 
+         transform: translate3d(0, 0, 0) rotate(0deg); 
+         opacity: 0; 
+       } 
+  
+       10% { 
+         opacity: 0.85; 
+       } 
+  
+       to { 
+         transform: translate3d(30px, 115vh, 0) rotate(220deg); 
+         opacity: 0.16; 
+       } 
+     } 
+  
+     @keyframes star-burst { 
+       from { 
+         transform: translate3d(0, 0, 0) scale(1); 
+         opacity: 0.95; 
+       } 
+  
+       to { 
+         transform: translate3d(var(--drift-x), var(--drift-y), 0) scale(0.2); 
+         opacity: 0; 
+       } 
+     } 
+   </style> 
+ </head> 
+ <body> 
+   <div class="snowfield" id="snowfield" aria-hidden="true"></div> 
+   <div class="cursor-star hidden" id="cursorStar" aria-hidden="true">&#9733;</div> 
+  
+   <div class="page-shell"> 
+     <section class="top-heading"> 
+       <p class="top-kicker">HANCYYYYYYY&#x1FAE0;</p> 
+       <h1>HANCYYYYYYY&#x1FAE0;</h1> 
+       <p class="top-copy">gracyous kids</p> 
+     </section> 
+  
+     <section class="profile-shell"> 
+       <article class="identity-card"> 
+         <div class="avatar-frame"> 
+           <span id="avatarText">HY</span> 
+           <img id="avatarImage" alt="Profile picture"> 
+         </div> 
+         <p class="small-label">Display Card</p> 
+         <h2 id="profileName">HANCYYYYYYY</h2> 
+         <p id="profileTagline">gracyous kids</p> 
+       </article> 
+  
+       <article class="details-card"> 
+         <h3>Connect</h3> 
+         <div class="detail-list"> 
+           <div class="detail-row"> 
+             <div class="icon-badge icon-instagram" aria-hidden="true"> 
+               <svg viewBox="0 0 24 24"> 
+                 <rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect> 
+                 <circle cx="12" cy="12" r="4.2"></circle> 
+                 <circle cx="17.4" cy="6.6" r="0.8" fill="#fff" stroke="none"></circle> 
+               </svg> 
+             </div> 
+             <div class="detail-meta"> 
+               <span>Instagram</span> 
+               <strong id="instagramValue">@username</strong> 
+             </div> 
+           </div> 
+  
+           <div class="detail-row"> 
+             <div class="icon-badge icon-snap" aria-hidden="true"> 
+               <svg viewBox="0 0 24 24"> 
+                 <path d="M9.3 19.3c.7-.5 1.4-.8 2.7-.8s2 .3 2.7.8c.5-.9 1.3-1.5 2.5-1.8-.9-.7-1.4-1.6-1.6-2.7.9-.2 1.6-.7 2-1.5-.7-.2-1.3-.5-1.8-.9.4-1 .5-2 .2-3.2-.7-2.8-3.2-4.6-6-4.6s-5.3 1.8-6 4.6c-.3 1.2-.2 2.2.2 3.2-.5.4-1.1.7-1.8.9.4.8 1.1 1.3 2 1.5-.2 1.1-.7 2-1.6 2.7 1.2.3 2 .9 2.5 1.8z"></path> 
+               </svg> 
+             </div> 
+             <div class="detail-meta"> 
+               <span>Snap ID</span> 
+               <strong id="snapValue">username</strong> 
+             </div> 
+           </div> 
+  
+           <div class="detail-row"> 
+             <div class="icon-badge icon-discord" aria-hidden="true"> 
+               <svg viewBox="0 0 24 24"> 
+                 <path d="M8 8.8c2.4-1.7 5.6-1.7 8 0"></path> 
+                 <path d="M7 16c3 1.7 7 1.7 10 0"></path> 
+                 <path d="M8.8 11.2h.1"></path> 
+                 <path d="M15.1 11.2h.1"></path> 
+                 <path d="M6.5 17.4c-.9-2-1.2-4.1-.8-6.2.5-2.4 1.8-4.4 3.8-5.8 1.7.2 2.6.6 2.6.6s.9-.4 2.6-.6c2 1.4 3.3 3.4 3.8 5.8.4 2.1.1 4.2-.8 6.2"></path> 
+               </svg> 
+             </div> 
+             <div class="detail-meta"> 
+               <span>Discord</span> 
+               <strong id="discordValue">username</strong> 
+             </div> 
+           </div> 
+  
+           <div class="detail-row"> 
+             <div class="icon-badge icon-server" aria-hidden="true"> 
+               <svg viewBox="0 0 24 24"> 
+                 <rect x="4" y="4.5" width="16" height="5" rx="1.8"></rect> 
+                 <rect x="4" y="14.5" width="16" height="5" rx="1.8"></rect> 
+                 <path d="M8 7h.01"></path> 
+                 <path d="M8 17h.01"></path> 
+               </svg> 
+             </div> 
+             <div class="detail-meta"> 
+               <span>Discord Server</span> 
+               <strong id="serverValue">Server invite or name</strong> 
+             </div> 
+           </div> 
+         </div> 
+       </article> 
+     </section> 
+   </div> 
+  
+   <audio id="entrySong" preload="auto" autoplay loop hidden> 
+     <source src="carousel.mp3" type="audio/mpeg"> 
+   </audio> 
+  
+   <script> 
+     const PROFILE = { 
+       name: "Hancyyyy", 
+       tagline: "Gamer | Creator | Friend", 
+       instagram: "__hanncyy__", 
+       snap: "@h3xer.2007", 
+       discord: "akhilff7024", 
+       discordServer: "https://discord.gg/FfsG3auz", 
+       avatarInitials: "H", 
+       photo: "" 
+     }; 
+  
+     document.getElementById("profileName").textContent = PROFILE.name; 
+     document.getElementById("profileTagline").textContent = PROFILE.tagline; 
+     document.getElementById("avatarText").textContent = PROFILE.avatarInitials; 
+  
+     // Instagram Link 
+     document.getElementById("instagramValue").innerHTML = `<a class="detail-link" href="https://www.instagram.com/${PROFILE.instagram.replace('@', '')}" target="_blank" rel="noreferrer">${PROFILE.instagram}</a>`; 
+  
+     // Snap ID Link 
+     document.getElementById("snapValue").innerHTML = `<a class="detail-link" href="https://www.snapchat.com/add/${PROFILE.snap.replace('@', '')}" target="_blank" rel="noreferrer">${PROFILE.snap}</a>`; 
+  
+     // Discord handle 
+     document.getElementById("discordValue").textContent = PROFILE.discord; 
+  
+     const serverValue = document.getElementById("serverValue"); 
+     if (PROFILE.discordServer.startsWith("http://") || PROFILE.discordServer.startsWith("https://")) { 
+       serverValue.innerHTML = `<a class="detail-link" href="${PROFILE.discordServer}" target="_blank" rel="noreferrer">HANCYYYY</a>`; 
+     } else { 
+       serverValue.textContent = PROFILE.discordServer; 
+     } 
+  
+     if (PROFILE.photo) { 
+       const img = document.getElementById("avatarImage"); 
+       img.src = PROFILE.photo; 
+       img.style.display = "block"; 
+       document.getElementById("avatarText").style.display = "none"; 
+     } 
+  
+     const snowfield = document.getElementById("snowfield"); 
+     const cursorStar = document.getElementById("cursorStar"); 
+     const entrySong = document.getElementById("entrySong"); 
+     let lastParticleTime = 0; 
+  
+     entrySong.play().catch(() => { 
+       const startSong = () => { 
+         entrySong.play().catch(() => {}); 
+         document.removeEventListener("click", startSong); 
+         document.removeEventListener("touchstart", startSong); 
+       }; 
+  
+       document.addEventListener("click", startSong, { once: true }); 
+       document.addEventListener("touchstart", startSong, { once: true }); 
+     }); 
+  
+     const snowflakeCount = window.matchMedia("(max-width: 920px)").matches ? 25 : 40; 
+     for (let index = 0; index < snowflakeCount; index += 1) { 
+       const flake = document.createElement("span"); 
+       flake.className = "snowflake"; 
+       flake.innerHTML = "&#10052;"; 
+       flake.style.left = `${Math.random() * 100}%`; 
+       flake.style.fontSize = `${10 + Math.random() * 18}px`; 
+       flake.style.opacity = `${0.38 + Math.random() * 0.42}`; 
+       flake.style.animationDuration = `${7 + Math.random() * 9}s`; 
+       flake.style.animationDelay = `${Math.random() * -12}s`; 
+       snowfield.appendChild(flake); 
+     } 
+  
+     if (window.matchMedia("(pointer: fine)").matches) { 
+       document.addEventListener("pointermove", (event) => { 
+         cursorStar.classList.remove("hidden"); 
+         cursorStar.style.transform = `translate(${event.clientX}px, ${event.clientY}px) scale(1)`; 
+         const now = performance.now(); 
+         if (now - lastParticleTime > 30) { 
+           spawnStarParticle(event.clientX, event.clientY); 
+           lastParticleTime = now; 
+         } 
+       }); 
+  
+       document.addEventListener("pointerleave", () => { 
+         cursorStar.classList.add("hidden"); 
+       }); 
+     } 
+  
+     function spawnStarParticle(x, y) { 
+       const particle = document.createElement("span"); 
+       particle.className = "star-particle"; 
+       particle.innerHTML = Math.random() > 0.5 ? "&#10022;" : "&#10023;"; 
+       particle.style.left = `${x}px`; 
+       particle.style.top = `${y}px`; 
+       particle.style.setProperty("--drift-x", `${-10 + Math.random() * 20}px`); 
+       particle.style.setProperty("--drift-y", `${-10 + Math.random() * 20}px`); 
+       document.body.appendChild(particle); 
+       window.setTimeout(() => particle.remove(), 700); 
+     } 
+   </script> 
+ </body> 
+ </html>
